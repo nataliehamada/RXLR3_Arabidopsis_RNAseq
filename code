@@ -1,0 +1,8 @@
+#copied mrna read files from directory /share/rwmarchive/Raw_Sequence/Athaliana/2018/06-WMA/2j8g7e0sk2/Unaligned/Project_RMKC_wenboma/
+#files names are as follows: 
+#col2777_S3_L003_R1_001.fastq.gz = Col0
+#r312353_S7_L003_R1_001.fastq.gz = RXLR3-1
+#r312415_S4_L003_R1_001.fastq.gz = RXLR3-1
+#r322173_S5_L003_R1_001.fastq.gz = RXLR3-2
+#r323090_S8_L003_R1_001.fastq.gz = RXLR3-2
+#rescue_S6_L003_R1_001.fastq.gz  = Col0
