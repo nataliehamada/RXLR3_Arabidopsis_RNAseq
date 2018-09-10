@@ -6,3 +6,16 @@
 #r322173_S5_L003_R1_001.fastq.gz = RXLR3-2
 #r323090_S8_L003_R1_001.fastq.gz = RXLR3-2
 #rescue_S6_L003_R1_001.fastq.gz  = Col0
+#AtRTD2_19April2016.fa = arabidopsis transcriptome, list version
+# AtRTD2_19April2016.gtf = arabidopsis transcriptome
+
+#changing permissions on read files
+ chmod a-w *
+
+#making a directory to assess read quality
+mkdir -p ~/mrna_fastqc
+
+#linking contents of directory with reads
+ln -fs ~/mrna_reads/* .
+
+
