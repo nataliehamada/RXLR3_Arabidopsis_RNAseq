@@ -18,4 +18,10 @@ mkdir -p ~/mrna_fastqc
 #linking contents of directory with reads
 ln -fs ~/mrna_reads/* .
 
+#fastqc of read files
+fastqc *.gz
+
+#compiled to a single multiqc report
+multiqc
+
 
