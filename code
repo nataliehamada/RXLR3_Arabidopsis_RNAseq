@@ -24,4 +24,16 @@ fastqc *.gz
 #compiled to a single multiqc report
 multiqc
 
+#obtained .fasta file containing adapter sequences that's included w/BBduk because that's what the lexogen manual recommended (https://github.com/BioInfoTools/BBMap/blob/master/resources/truseq.fa.gz)
+#saved as truseq.fa
+#using trimmomatic to filter out reads + trim adapter sequences
 
+for filename in *fastq.gz 
+do
+base=$(basename $filename .fastq.gz)
+echo $base 
+trimmomatic SE ${base} .fastq.gz \
+${base}.qc.fq.gz \
+ILLUMINACLIP:truseq.fa:2:30:10 \
+LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+done
