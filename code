@@ -30,9 +30,9 @@ multiqc
 
 for filename in *fastq.gz 
 do
-base=$(basename $filename.fastq.gz)
+base=$(basename $filename .fastq.gz)
 echo $base 
-trimmomatic SE ${base} .fastq.gz \
+trimmomatic SE ${base}.fastq.gz \
 ${base}.qc.fq.gz \
 ILLUMINACLIP:truseq.fa:2:30:10 \
 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
