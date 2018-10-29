@@ -37,3 +37,13 @@ ${base}.qc.fq.gz \
 ILLUMINACLIP:truseq.fa:2:30:10 \
 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 done
+
+#generate multiqc report to compare 
+multiqc
+
+##using STAR genome aligner to align trimmed reads to reference genome
+#indexing genome
+chmod a-w *
+STAR --runMode genomeGenerate --genomeDir /home/nhamada/rxlr3_rnaseq --genomeFastaFiles /home/nhamada/rxlr3_rnaseq/AtRTD2_19April2016.fa --limitGenomeGenerateRAM 57455000960
+
+
