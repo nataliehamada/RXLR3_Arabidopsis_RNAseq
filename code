@@ -46,4 +46,7 @@ multiqc
 chmod a-w *
 STAR --runMode genomeGenerate --genomeDir /home/nhamada/rxlr3_rnaseq --genomeFastaFiles /home/nhamada/rxlr3_rnaseq/AtRTD2_19April2016.fa --limitGenomeGenerateRAM 57455000960
 
+#aligning read files to indexed reference -- one example for one file
+STAR --runThreadN 48 --genomeDir /home/nhamada/rxlr3_rnaseq --readFilesIn /home/nhamada/rxlr3_rnaseq/ r312415_S4_L003_R1_001.qc.fq --outFileNamePrefix /home/nhamada/rxlr3_rnaseq/r312415_S4_L003_R1_001
+
 
