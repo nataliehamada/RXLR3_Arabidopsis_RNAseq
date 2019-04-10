@@ -1,0 +1,107 @@
+#unzipped files on cyverse using the app Uncompress_with_gunzip_1.6-2_analysis1
+#performed fastqc analysis on files with cyverse app FastQC_0.11.5__multi-file__analysis1
+#FastQC parameters are: 
+  ILLUMINACLIP:truseq.fa:2:30:10
+  LEADING:3
+  TRAILING:3
+  SLIDINGWINDOW:4:15
+  MINLEN:36
+  #Plus, selected the option for SE reads
+#Aligned reads to reference using cyverse app HISAT2-index-align-2.1
+    Executable,Argument Option,Argument Value
+  ,--user_database,AtRTD2_19April2016.fa
+  ,-file_query,trimScol2777_S3_L003_R1_001.fastq
+  ,-file_query,trimSr312353_S7_L003_R1_001.qc.fq
+  ,-file_query,trimSr312415_S4_L003_R1_001.qc.fq
+  ,-file_query,trimSr322173_S5_L003_R1_001.fastq
+  ,-file_query,trimSr323090_S8_L003_R1_001.fastq
+  ,-file_query,trimSrescue_S6_L003_R1_001.qc.fq
+  ,--file_type,SE
+  ,-n_cores,4
+  ,--min-intronlen,20
+  ,--max-intronlen,500000
+  ,-I,0
+  ,-X,500
+
+#Transcript assembly using cyverse app StringTie-1.3.3 
+    Executable,Argument Option,Argument Value
+  ,--file_query,trimScol2777_S3_L003_R1_001.sorted.bam
+  ,--file_query,trimSr312353_S7_L003_R1_001.sorted.bam
+  ,--file_query,trimSr312415_S4_L003_R1_001.sorted.bam
+  ,--file_query,trimSr322173_S5_L003_R1_001.sorted.bam
+  ,--file_query,trimSr323090_S8_L003_R1_001.sorted.bam
+  ,--file_query,trimSrescue_S6_L003_R1_001.sorted.bam
+  ,-G,AtRTD2_19April2016.gtf
+  ,-p,4
+  ,-m,200
+  ,-c,2.5
+  ,-g,50
+  ,-f,0.1
+#Used cyverse app StringTie-1.3.3_merge to create a single report for all 6 samples
+  Executable,Argument Option,Argument Value
+  ,--merge,
+  ,,trimSr312353_S7_L003_R1_001.gtf
+  ,,trimSr312415_S4_L003_R1_001.gtf
+  ,,trimSr322173_S5_L003_R1_001.gtf
+  ,,trimSr323090_S8_L003_R1_001.gtf
+  ,,trimSrescue_S6_L003_R1_001.gtf
+  ,,trimScol2777_S3_L003_R1_001.gtf
+  ,-G,AtRTD2_19April2016.gtf
+  ,-m,50
+  ,-c,0
+  ,-F,0
+  ,-f,0.1
+  ,-o,merged.out.gtf
+  ,-T,0
+
+#Used cyverse to re-estimate transcript counts post-merge (StringTie-1.3.3)
+#this time checked box on app to generate .ctab files necessary for ballgown
+    Executable,Argument Option,Argument Value
+  ,--file_query,trimScol2777_S3_L003_R1_001.sorted.bam
+  ,--file_query,trimSr312353_S7_L003_R1_001.sorted.bam
+  ,--file_query,trimSr312415_S4_L003_R1_001.sorted.bam
+  ,--file_query,trimSr322173_S5_L003_R1_001.sorted.bam
+  ,--file_query,trimSr323090_S8_L003_R1_001.sorted.bam
+  ,--file_query,trimSrescue_S6_L003_R1_001.sorted.bam
+  ,-G,merged.out.gtf
+  ,-p,4
+  ,-m,200
+  ,-c,2.5
+  ,-g,50
+  ,-f,0.1
+  
+#Switched over to RStudio to perform statistical analysis + plotting
+#Code heavily adapted from the ballgown tutorial on RPubs
+#Reading file for ballgown parameters
+pheno_data = read.table(file ="data_matrix", header = TRUE, sep = "\t")
+
+#Loaded directory with ballgown input files
+sample_full_path <- paste("ballgown_input_files",pheno_data[,1], sep = '/')
+
+#Ran ballgown DE on samples
+bg = ballgown(samples=as.vector(sample_full_path),pData=pheno_data)
+
+#view description of ballgown output
+## ballgown instance with 97595 transcripts and 6 samples
+
+#Filtering low-abundance genes by removing transcripts with variance across samples less than 1
+bg_filt = subset(bg,"rowVars(texpr(bg)) >1",genomesubset=TRUE)
+
+#Pulling gene expression data from the ballgown object
+gene_expression = as.data.frame(gexpr(bg_filt))
+
+#Set column names to sample names
+colnames(gene_expression) <- c("col2777_S3","r312353_S7","r312415_S4","r322173_S5","r323090_S8","rescue_S6")
+
+#Checked dimensions of the gene expression dataframe
+##[1] 13568     6
+
+#Assigned colors to each sample
+data_colors=c("lightpink","lightgreen","lightblue","thistle1","khaki1","coral")
+
+
+  
+
+
+
+
