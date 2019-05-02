@@ -36,6 +36,32 @@ STAR --runThreadN 4 \
 --readFilesIn /share/rwmwork/nhamada/2018_AtRXLR3_rnaseq/col2777_S3_L003_R1_001.fastq \
 > col2777_S3_L003_R1_001_star_alignment/col2777_S3_L003_R1_001_STAR.stdout 2> col2777_S3_L003_R1_001_star_alignment/col2777_S3_L003_R1_001_STAR.stderr
 
+##Making a text file that contains the % of reads unmapped by STAR per file
+awk 'FNR==30 {print FILENAME, $0}' star_align/*/*Log.final.out >2019_AtRXLR3_percentunmapped.txt
+
+##Also something to note -- blasted a few unmapped reads for each sample and a lot of them seem to blast to 16s rRNA genes? Perhaps TAGseq isn't the best at being specific to polyA tail
+##Going to simply throw out files with high bacterial contamination -- S8 and S16
+#star_align/col0_1_S1_L001_R1_001_star_alignment/col0_1_S1_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   3.08%
+#star_align/col0_2_S2_L001_R1_001_star_alignment/col0_2_S2_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   2.17%
+#star_align/col0_3_S3_L001_R1_001_star_alignment/col0_3_S3_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   3.16%
+#star_align/col0_4_S4_L001_R1_001_star_alignment/col0_4_S4_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   4.64%
+#star_align/FR32_4_1_S5_L001_R1_001_star_alignment/FR32_4_1_S5_L001_R1_001_Log.final.out                  % of reads unmapped: too short |       3.26%
+#star_align/FR32_4_2_S6_L001_R1_001_star_alignment/FR32_4_2_S6_L001_R1_001_Log.final.out                  % of reads unmapped: too short |       2.84%
+#star_align/FR32_4_3_S7_L001_R1_001_star_alignment/FR32_4_3_S7_L001_R1_001_Log.final.out                  % of reads unmapped: too short |       4.46%
+#star_align/FR32_4_4_S8_L001_R1_001_star_alignment/FR32_4_4_S8_L001_R1_001_Log.final.out                  % of reads unmapped: too short |       77.63%
+#star_align/FR3_6_1_S9_L001_R1_001_star_alignment/FR3_6_1_S9_L001_R1_001_Log.final.out                  % of reads unmapped: too short | 2.70%
+#star_align/FR3_6_2_S10_L001_R1_001_star_alignment/FR3_6_2_S10_L001_R1_001_Log.final.out                  % of reads unmapped: too short |       2.85%
+#star_align/FR3_6_3_S11_L001_R1_001_star_alignment/FR3_6_3_S11_L001_R1_001_Log.final.out                  % of reads unmapped: too short |       3.46%
+#star_align/FR3_6_4_S12_L001_R1_001_star_alignment/FR3_6_4_S12_L001_R1_001_Log.final.out                  % of reads unmapped: too short |       4.33%
+#star_align/YR3_3_1_1_S13_L001_R1_001_star_alignment/YR3_3_1_1_S13_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   8.02%
+#star_align/YR3_3_1_2_S14_L001_R1_001_star_alignment/YR3_3_1_2_S14_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   26.36%
+#star_align/YR3_3_1_3_S15_L001_R1_001_star_alignment/YR3_3_1_3_S15_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   1.17%
+#star_align/YR3_3_1_4_S16_L001_R1_001_star_alignment/YR3_3_1_4_S16_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   99.03%
+#star_align/YR3_4_1_1_S17_L001_R1_001_star_alignment/YR3_4_1_1_S17_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   2.31%
+#star_align/YR3_4_1_2_S18_L001_R1_001_star_alignment/YR3_4_1_2_S18_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   4.06%
+#star_align/YR3_4_1_3_S19_L001_R1_001_star_alignment/YR3_4_1_3_S19_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   29.39%
+#star_align/YR3_4_1_4_S20_L001_R1_001_star_alignment/YR3_4_1_4_S20_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   2.48%#
+
 
 #Blasting reads unaligned by STAR to database with lettuce genome + arabidopsis genome
 ##Seems as if there is either bad contamination or library mix up? Going to blast read files to database containing RXLR3 sequence and also lettuce genome
