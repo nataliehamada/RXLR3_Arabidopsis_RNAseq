@@ -63,8 +63,20 @@ awk 'FNR==30 {print FILENAME, $0}' star_align/*/*Log.final.out >2019_AtRXLR3_per
 #star_align/YR3_4_1_4_S20_L001_R1_001_star_alignment/YR3_4_1_4_S20_L001_R1_001_Log.final.out                  % of reads unmapped: too short |   2.48%#
 
 
-#Blasting reads unaligned by STAR to database with lettuce genome + arabidopsis genome
-##Seems as if there is either bad contamination or library mix up? Going to blast read files to database containing RXLR3 sequence and also lettuce genome
+##Using tutorial from https://ucdavis-bioinformatics-training.github.io/2017-June-RNA-Seq-Workshop/thursday/counts to merge all star reports
+for x in star_align/*/*ReadsPerGene.out.tab; do \
+> s=`basename $x | cut -f1,2,3,4 -d_`
+> echo $s
+> cat $x | tail -n +5 | cut -f3 > 2019_AtRXLR3_counts/$s.count
+> done
+
+tail -n +5 star_align/col0_1_S1_L001_R1_001_star_alignment/col0_1_S1_L001_R1_001_ReadsPerGene.out. tab | cut -f1 > geneids.txt
+paste geneids.txt 2019_AtRXLR3_counts/*.count > tmp.out
+cat samples.txt | cut -d_ -f1 | paste -s > header.txt
+cat header.txt tmp.out > 2019_AtRXLR3_all_counts.txt
+
+
+
 
 
 
