@@ -86,7 +86,12 @@ samtools index $f
 done
 
 
-
+#subsetting counts data frame in R
+data <- read.delim("2019_AtRXLR3_all_counts.txt", stringsAsFactors = FALSE)
+genes <- data[1]
+counts <- data.matrix(data[2:21])
+#Removing samples with very low map rate -- S8, S16
+counts_use <- counts[, -c(8,16)]
 
 
 
