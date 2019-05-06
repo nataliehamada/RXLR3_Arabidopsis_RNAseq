@@ -75,6 +75,9 @@ paste geneids.txt 2019_AtRXLR3_counts/*.count > tmp.out
 cat samples.txt | cut -d_ -f1 | paste -s > header.txt
 cat header.txt tmp.out > 2019_AtRXLR3_all_counts.txt
 
+##removing string "gene-" because the "-" sign is causing issues with analysis in R
+sed -i 's/gene-//g' 2019_AtRXLR3_all_counts.txt
+
 #Generating bam indeces for alignment visualization on IGV
 module load samtools
 for f in star_align/*_star_alignment/*_Aligned.sortedByCoord.out.bam
