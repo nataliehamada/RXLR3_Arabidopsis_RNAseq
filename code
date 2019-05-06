@@ -97,5 +97,12 @@ counts_use <- counts[, -c(8,16)]
 group <- c("col0", "col0", "col0", "col0", "FR32", "FR32", "FR32", "FR36", "FR36", "FR36", "FR36", "YR3", "YR3", "YR3", "YR3", "YR3", "YR3", "YR3")
 y <- DGEList(counts=counts_use, group=group)
 
+#Filtering out genes with universal low exp. across all samples
+keep <- filterByExpr(y)
+y <- y[keep, , keep.lib.sizes=FALSE]
+y[["samples"]][["lib.size"]]
+##[1]  9832403  9183472  9424590  8947950  6959775  8848132  8200605 12739594 11936262  9122450  2680878  5171115   815537
+##[14] 53030257  9952465  2797843   513510  9105145
+
 
 
