@@ -127,5 +127,9 @@ y$samples
 ##S19   YR3   513510    1.0152942
 ##S20   YR3  9105145    1.0399847
 
+#"A normalization factor below one indicates that a small number of high count genes are monopolizing the sequencing, causing the counts for other genes to be lower than would be usual given the library size. As
+a result, the library size will be scaled down, analogous to scaling the counts upwards in that
+library. Conversely, a factor above one scales up the library size, analogous to downscaling
+the counts."
 
 
