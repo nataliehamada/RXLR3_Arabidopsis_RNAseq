@@ -93,9 +93,16 @@ counts <- data.matrix(data[2:21])
 #Removing samples with very low map rate -- S8, S16
 counts_use <- counts[, -c(8,16)]
 
-#Making DGElist object 
-group <- c("col0", "col0", "col0", "col0", "FR32", "FR32", "FR32", "FR36", "FR36", "FR36", "FR36", "YR3", "YR3", "YR3", "YR3", "YR3", "YR3", "YR3")
-y <- DGEList(counts=counts_use, group=group)
+#Making DGElist object + metadata file for samples in excel 
+sample_metadata <- read_excel("sample_metadata.xlsx")
+View(sample_metadata)
+group <- sample_metadata$group_name
+y <- DGEList(counts=counts_use, group=group[c(-8,-16)])
+View(y)
+y[["samples"]][["group"]]
+##[1] col0 col0 col0 col0 FR32 FR32 FR32 FR36 FR36 FR36 FR36 YR33 YR33 YR33 YR34 YR34 YR34
+##[18] YR34
+##Levels: col0 FR32 FR36 YR33 YR34
 
 #Filtering out genes with universal low exp. across all samples
 keep <- filterByExpr(y)
