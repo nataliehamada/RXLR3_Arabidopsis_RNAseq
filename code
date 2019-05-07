@@ -140,7 +140,7 @@ library. Conversely, a factor above one scales up the library size, analogous to
 the counts."
 
 #Making MDS plot to compare all samples
-col_by_group <- c("chartreuse", "chartreuse", "chartreuse", "chartreuse", "chocolate1", "chocolate1", "chocolate1", "gold", "gold", "gold", "gold", "darkturquoise", "darkturquoise", "darkturquoise", "darkturquoise", "darkturquoise", "darkturquoise", "darkturquoise")
+col_by_group <- c(rep("chartreuse",4), rep("chocolate1",3), rep("gold",4), rep("darkturquoise",3), rep("darkorchid1",4))
 mds <- plotMDS(y)
 plotMDS(mds, col=col_by_group)
 
