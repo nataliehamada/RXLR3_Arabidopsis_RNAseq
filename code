@@ -132,4 +132,9 @@ a result, the library size will be scaled down, analogous to scaling the counts 
 library. Conversely, a factor above one scales up the library size, analogous to downscaling
 the counts."
 
+#Making MDS plot to compare all samples
+col_by_group <- c("chartreuse", "chartreuse", "chartreuse", "chartreuse", "chocolate1", "chocolate1", "chocolate1", "gold", "gold", "gold", "gold", "darkturquoise", "darkturquoise", "darkturquoise", "darkturquoise", "darkturquoise", "darkturquoise", "darkturquoise")
+mds <- plotMDS(y)
+plotMDS(mds, col=col_by_group)
+
 
