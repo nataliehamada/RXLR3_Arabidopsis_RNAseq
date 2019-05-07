@@ -114,7 +114,7 @@ y[["samples"]][["lib.size"]]
 #Normalization values after TMM normalization
 y <- calcNormFactors(y)
 y$samples
-##group lib.size norm.factors
+####group lib.size norm.factors
 ##S1   col0  9832403    0.9380088
 ##S2   col0  9183472    0.9783499
 ##S3   col0  9424590    1.0106355
@@ -126,13 +126,13 @@ y$samples
 ##S10  FR36 11936262    1.1113095
 ##S11  FR36  9122450    1.0517725
 ##S12  FR36  2680878    1.0441581
-##S13   YR3  5171115    1.0005596
-##S14   YR3   815537    0.9379716
-##S15   YR3 53030257    0.9930132
-##S17   YR3  9952465    1.1218542
-##S18   YR3  2797843    1.0403558
-##S19   YR3   513510    1.0152942
-##S20   YR3  9105145    1.0399847
+##S13  YR33  5171115    1.0005596
+##S14  YR33   815537    0.9379716
+##S15  YR33 53030257    0.9930132
+##S17  YR34  9952465    1.1218542
+##S18  YR34  2797843    1.0403558
+##S19  YR34   513510    1.0152942
+##S20  YR34  9105145    1.0399847
 
 #"A normalization factor below one indicates that a small number of high count genes are monopolizing the sequencing, causing the counts for other genes to be lower than would be usual given the library size. As
 a result, the library size will be scaled down, analogous to scaling the counts upwards in that
