@@ -98,13 +98,18 @@ FR32_group <- c("col0", "col0", "col0", "col0", "FR32", "FR32", "FR32", "FR32")
 FR32_dgelist <- DGEList(counts=FR32_gene_counts, group=FR32_group)
 
 #Removing genes w/universal low expression
-keep <- filterByExpr(FR32_dgelist_actual)
-FR32_dgelist_actual <- FR32_dgelist_actual[keep, , keep.lib.sizes=FALSE]
+keep <- filterByExpr(FR32_dgelist)
+FR32_dgelist <- FR32_dgelist[keep, , keep.lib.sizes=FALSE]
 FR32_dgelist[["samples"]][["lib.size"]]
 
 ##[1] 9832403 9183472 9424590 8947950 6959775 8848132 8200605
 
-FR32_dgelist_actual$samples
+
+#calculating normalization factors + estimating common+tagwise dispersion
+ FR32_design <- model.matrix(~FR32_group)
+FR32_dgelist <- calcNormFactors(FR32_dgelist)
+FR32_dgelist <- estimateDisp(FR32_dgelist, FR32_design)
+FR32_dgelist$samples
 ###group lib.size norm.factors
 #S1  col0  9823309    0.9961817
 #S2  col0  9173712    1.0282767
@@ -113,10 +118,6 @@ FR32_dgelist_actual$samples
 #S5  FR32  6952962    1.0014350
 #S6  FR32  8839850    0.9655681
 #S7  FR32  8192451    1.0048724
-
-#calculating normalization factors + estimating common+tagwise dispersion
-FR32_dgelist_actual <- calcNormFactors(FR32_dgelist_actual)
-FR32_dgelist_actual <- estimateDisp(FR32_dgelist_actual, FR32_design)
 
 ##[1] 0.04665711
 
