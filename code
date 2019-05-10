@@ -8,8 +8,10 @@ ILLUMINACLIP:truseq.fa:2:30:10 \
 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:50
 done
 
+##trimmomatic report: file:///C:/Users/natal/OneDrive/Documents/Michelmore_Lab/Bioinformatics/2019_AtRXLR3_RNAseq/multiqc_report_posttrimmomatic.html
+
 ##STAR
-#Indexing reference genome
+#Indexing reference genome using NCBI files
 module load star
 STAR --runThreadN 4 \
 --runMode genomeGenerate \
@@ -34,7 +36,7 @@ STAR --runThreadN 4 \
 --outWigType wiggle \
 --outFileNamePrefix col2777_S3_L003_R1_001_star_alignment/col2777_S3_L003_R1_001_ \
 --readFilesIn /share/rwmwork/nhamada/2018_AtRXLR3_rnaseq/col2777_S3_L003_R1_001.fastq \
-> col2777_S3_L003_R1_001_star_alignment/col2777_S3_L003_R1_001_STAR.stdout 2> col2777_S3_L003_R1_001_star_alignment/col2777_S3_L003_R1_001_STAR.stderr
+
 
 ##Making a text file that contains the % of reads unmapped by STAR per file
 awk 'FNR==30 {print FILENAME, $0}' star_align/*/*Log.final.out >2019_AtRXLR3_percentunmapped.txt
@@ -88,60 +90,46 @@ done
 
 #subsetting counts data frame in R
 data <- read.delim("2019_AtRXLR3_all_counts.txt", stringsAsFactors = FALSE)
-genes <- data[1]
-counts <- data.matrix(data[2:21])
-#Removing samples with very low map rate -- S8, S14, S16, S19
-counts_use <- counts[, -c(-8,-14,-16,-19)]
-y <- DGEList(counts=counts_use, group=group[c(-8,-14,-16,-19)])
+#Removing a duplicated gene row -- counts were 0 across all samples for the deleted row....
+data <- data[-52,]
+FR32_gene_counts <- data[, 1:8]
+FR32_gene_counts <- column_to_rownames(FR32_gene_counts, loc=1)
+FR32_group <- c("col0", "col0", "col0", "col0", "FR32", "FR32", "FR32", "FR32")
+FR32_dgelist <- DGEList(counts=FR32_gene_counts, group=FR32_group)
 
-#Making DGElist object + metadata file for samples in excel 
-sample_metadata <- read_excel("sample_metadata.xlsx")
-View(sample_metadata)
-group <- sample_metadata$group_name
-View(y)
-y[["samples"]][["group"]]
-##[1] col0 col0 col0 col0 FR32 FR32 FR32 FR36 FR36 FR36 FR36 YR33 YR33 YR33 YR34 YR34 YR34
-##[18] YR34
-##Levels: col0 FR32 FR36 YR33 YR34
+#Removing genes w/universal low expression
+keep <- filterByExpr(FR32_dgelist_actual)
+FR32_dgelist_actual <- FR32_dgelist_actual[keep, , keep.lib.sizes=FALSE]
+FR32_dgelist[["samples"]][["lib.size"]]
 
-#Filtering out genes with universal low exp. across all samples
-keep <- filterByExpr(y)
-y <- y[keep, , keep.lib.sizes=FALSE]
-y[["samples"]][["lib.size"]]
-##[1]  9832403  9183472  9424590  8947950  6959775  8848132  8200605 12739594 11936262  9122450  2680878  5171115   815537
-##[14] 53030257  9952465  2797843   513510  9105145
+##[1] 9832403 9183472 9424590 8947950 6959775 8848132 8200605
 
-#Normalization values after TMM normalization
-y <- calcNormFactors(y)
-y$samples
-####group lib.size norm.factors
-##S1   col0  9832403    0.9380088
-##S2   col0  9183472    0.9783499
-##S3   col0  9424590    1.0106355
-##S4   col0  8947950    0.8833712
-##S5   FR32  6959775    0.9421370
-##S6   FR32  8848132    0.9045957
-##S7   FR32  8200605    0.9460105
-##S9   FR36 12739594    1.0800617
-##S10  FR36 11936262    1.1113095
-##S11  FR36  9122450    1.0517725
-##S12  FR36  2680878    1.0441581
-##S13  YR33  5171115    1.0005596
-##S14  YR33   815537    0.9379716
-##S15  YR33 53030257    0.9930132
-##S17  YR34  9952465    1.1218542
-##S18  YR34  2797843    1.0403558
-##S19  YR34   513510    1.0152942
-##S20  YR34  9105145    1.0399847
+FR32_dgelist_actual$samples
+###group lib.size norm.factors
+#S1  col0  9823309    0.9961817
+#S2  col0  9173712    1.0282767
+#S3  col0  9414691    1.0611665
+#S4  col0  8939875    0.9467851
+#S5  FR32  6952962    1.0014350
+#S6  FR32  8839850    0.9655681
+#S7  FR32  8192451    1.0048724
 
-#"A normalization factor below one indicates that a small number of high count genes are monopolizing the sequencing, causing the counts for other genes to be lower than would be usual given the library size. As
-a result, the library size will be scaled down, analogous to scaling the counts upwards in that
-library. Conversely, a factor above one scales up the library size, analogous to downscaling
-the counts."
+#calculating normalization factors + estimating common+tagwise dispersion
+FR32_dgelist_actual <- calcNormFactors(FR32_dgelist_actual)
+FR32_dgelist_actual <- estimateDisp(FR32_dgelist_actual, FR32_design)
 
-#Making MDS plot to compare all samples
-col_by_group <- c(rep("chartreuse",4), rep("chocolate1",3), rep("gold",4), rep("darkturquoise",3), rep("darkorchid1",4))
-mds <- plotMDS(y)
-plotMDS(mds, col=col_by_group)
+##[1] 0.04665711
+
+##Making an MDS plot to compare similarity of samples
+FR32_cols <- c(rep("chartreuse", 4), rep("chocolate1", 3))
+FR32_mds <- plotMDS(FR32_dgelist_actual)
+plotMDS(FR32_mds_actual, col=FR32_cols)
+legend("topright", legend = c("col0", "35S:FLAG-RXLR3 line 2-4") ,
+col = c("chartreuse", "chocolate1") , pch =20 , bty = "n",
+pt.cex = 1.7, cex = 1 , text.col = "black", horiz = FALSE, inset = c(0.1, 0.1))
+
+##exact test to ID top picks for DE genes
+FR32_et <- exactTest(FR32_dgelist_actual)
+topTags(FR32_et, n=20)
 
 
