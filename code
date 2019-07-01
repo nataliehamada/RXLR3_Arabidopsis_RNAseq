@@ -87,50 +87,13 @@ do
 samtools index $f
 done
 
-
-#subsetting counts data frame in R
-data <- read.delim("2019_AtRXLR3_all_counts.txt", stringsAsFactors = FALSE)
-#Removing a duplicated gene row -- counts were 0 across all samples for the deleted row....
-data <- data[-52,]
-FR32_gene_counts <- data[, 1:8]
-FR32_gene_counts <- column_to_rownames(FR32_gene_counts, loc=1)
-FR32_group <- c("col0", "col0", "col0", "col0", "FR32", "FR32", "FR32", "FR32")
-FR32_dgelist <- DGEList(counts=FR32_gene_counts, group=FR32_group)
-
-#Removing genes w/universal low expression
-keep <- filterByExpr(FR32_dgelist)
-FR32_dgelist <- FR32_dgelist[keep, , keep.lib.sizes=FALSE]
-FR32_dgelist[["samples"]][["lib.size"]]
-
-##[1] 9832403 9183472 9424590 8947950 6959775 8848132 8200605
-
-
-#calculating normalization factors + estimating common+tagwise dispersion
- FR32_design <- model.matrix(~FR32_group)
-FR32_dgelist <- calcNormFactors(FR32_dgelist)
-FR32_dgelist <- estimateDisp(FR32_dgelist, FR32_design)
-FR32_dgelist$samples
-###group lib.size norm.factors
-#S1  col0  9823309    0.9961817
-#S2  col0  9173712    1.0282767
-#S3  col0  9414691    1.0611665
-#S4  col0  8939875    0.9467851
-#S5  FR32  6952962    1.0014350
-#S6  FR32  8839850    0.9655681
-#S7  FR32  8192451    1.0048724
-
-##[1] 0.04665711
-
-##Making an MDS plot to compare similarity of samples
-FR32_cols <- c(rep("chartreuse", 4), rep("chocolate1", 3))
-FR32_mds <- plotMDS(FR32_dgelist_actual)
-plotMDS(FR32_mds_actual, col=FR32_cols)
-legend("topright", legend = c("col0", "35S:FLAG-RXLR3 line 2-4") ,
-col = c("chartreuse", "chocolate1") , pch =20 , bty = "n",
-pt.cex = 1.7, cex = 1 , text.col = "black", horiz = FALSE, inset = c(0.1, 0.1))
-
-##exact test to ID top picks for DE genes
-FR32_et <- exactTest(FR32_dgelist_actual)
-topTags(FR32_et, n=20)
-
-
+#Example of code run when aligning reads to a library containing only the RXLR3 sequence
+module load star
+mkdir col0_1_S1_L001_R1_001_rxlr3_star_alignment
+STAR --runThreadN 4 \
+--genomeDir $REFDIR \
+--outSAMtype BAM Unsorted SortedByCoordinate \
+--outReadsUnmapped Fastx \
+--quantMode GeneCounts \
+--outFileNamePrefix col0_1_S1_L001_R1_001_rxlr3_star_alignment/col0_1_S1_L001_R1_001_ \
+--readFilesIn /share/rwmwork/nhamada/AtRXLR3_rnaseq/fastqc/col0_1_S1_L001_R1_001.qc.fq \
