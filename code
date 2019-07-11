@@ -87,6 +87,15 @@ do
 samtools index $f
 done
 
+#Generation of genome index containing only RXLR3 sequence
+STAR --runThreadN 4 \
+--runMode genomeGenerate \
+--genomeDir /share/rwmwork/nhamada/ref \
+--genomeFastaFiles /share/rwmwork/nhamada/ref/RXLR3.fas \
+--sjdbGTFfile /share/rwmwork/nhamada/ref/rxlr3.gtf \
+--genomeSAindexNbases 2
+
+
 #Example of code run when aligning reads to a library containing only the RXLR3 sequence
 module load star
 mkdir col0_1_S1_L001_R1_001_rxlr3_star_alignment
